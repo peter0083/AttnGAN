@@ -17,6 +17,8 @@ import numpy as np
 import torch
 import torchvision.transforms as transforms
 
+os.environ['KMP_DUPLICATE_LIB_OK']='True'
+
 dir_path = (os.path.abspath(os.path.join(os.path.realpath(__file__), './.')))
 sys.path.append(dir_path)
 

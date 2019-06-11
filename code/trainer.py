@@ -357,7 +357,8 @@ class condGANTrainer(object):
             else:
                 netG = G_NET()
             netG.apply(weights_init)
-            netG.cuda()
+            if cfg.CUDA:
+                netG.cuda()
             netG.eval()
             #
             text_encoder = RNN_ENCODER(self.n_words, nhidden=cfg.TEXT.EMBEDDING_DIM)
@@ -365,7 +366,8 @@ class condGANTrainer(object):
                 torch.load(cfg.TRAIN.NET_E, map_location=lambda storage, loc: storage)
             text_encoder.load_state_dict(state_dict)
             print('Load text encoder from:', cfg.TRAIN.NET_E)
-            text_encoder = text_encoder.cuda()
+            if cfg.CUDA:
+                text_encoder = text_encoder.cuda()
             text_encoder.eval()
 
             batch_size = self.batch_size
@@ -456,7 +458,8 @@ class condGANTrainer(object):
                 torch.load(model_dir, map_location=lambda storage, loc: storage)
             netG.load_state_dict(state_dict)
             print('Load G from: ', model_dir)
-            netG.cuda()
+            if cfg.CUDA:
+                netG.cuda()
             netG.eval()
             for key in data_dic:
                 save_dir = '%s/%s' % (s_tmp, key)
@@ -470,13 +473,15 @@ class condGANTrainer(object):
                     captions = Variable(torch.from_numpy(captions))
                     cap_lens = Variable(torch.from_numpy(cap_lens))
 
-                    captions = captions.cuda()
-                    cap_lens = cap_lens.cuda()
+                    if cfg.CUDA:
+                        captions = captions.cuda()
+                        cap_lens = cap_lens.cuda()
 
                 for i in range(1):  # 16
                     with torch.no_grad():
                         noise = Variable(torch.FloatTensor(batch_size, nz))
-                        noise = noise.cuda()
+                        if cfg.CUDA:
+                            noise = noise.cuda()
                     #######################################################
                     # (1) Extract text embeddings
                     ######################################################
